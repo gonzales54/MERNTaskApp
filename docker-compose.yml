@@ -8,6 +8,7 @@ services:
       - 3000:3000
     volumes:
       - ./src/server:/home/node/app/server
+    command: npm start
 
   mongo:
     build: 
