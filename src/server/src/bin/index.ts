@@ -8,6 +8,7 @@ import app from '../app';
 import * as http from 'http';
 import * as debugModule from 'debug';
 import { AddressInfo } from 'net';
+import connectDB from '../database/database';
 const debug = debugModule.debug('quick-start-express-typescript:server');
 
 /**
@@ -21,7 +22,7 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-const server = http.createServer(app);
+const server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse> = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -64,20 +65,20 @@ function onError(error: any): void {
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
-  case 'EACCES':
-    console.error(bind + ' requires elevated privileges');
-    process.exit(1);
-    break;
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
 
-  case 'EADDRINUSE':
-    console.error(bind + ' is already in use');
-    process.exit(1);
-    break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
 
-  default:
-    throw error;
-    break;
-  }
+    default:
+      throw error;
+      break;
+    }
 }
 
 /**
@@ -85,6 +86,8 @@ function onError(error: any): void {
  */
 
 function onListening(): void {
+  connectDB();
+  
   function bind() {
     const addr: string | AddressInfo | null = server.address();
     if (addr === null) {
